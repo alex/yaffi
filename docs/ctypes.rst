@@ -67,5 +67,35 @@ Some of the APIs in ``ctypes`` have large issues, a few examples:
   these doesn't give a noticeable error, and can lead to crashes (again,
   feeding back into the lack of memory safety).  When interfacing with external
   resources, making sure there is as little chance for an uncaught error as
-  possible, these result in segfaults which are not easy debuggable from Python.
-*
+  possible is paramount, these result in segfaults which are not easy
+  debuggable from Python.
+* The way to signal that a function didn't return an error when using the
+  ``errcheck`` feature is to return the arguments tuple from the callback.
+  That's just obscure, a) it's totally unguessable, b) even having learned
+  about this feature I'd never possibly have guessed it.
+
+Speed
+-----
+
+This one can be overcome with some good engineering, but most of it really shouldn't be necessary.  An FFI needs to be fast, because its competitor is a C-extension, if it imposes too much overhead, no one will use it.  ``ctypes`` does the following things which lead to slowness
+
+* It uses a different ``type`` for every length of array.  Generally, one of
+  the first heuristics an optimizing compiler for Python will use is try to
+  generate separate code paths for each type, this defeats this heuristic
+  (which is pretty effective on normal Python code).
+* The ``argtypes`` and ``restype`` of a function can be changed at any time.
+  That's frankly just a bit silly, and means if a ``ctypes`` function call is
+  JIT compiled it needs to check that these remain changed.  These should be
+  immutable attributes, not things that can change.
+
+I want ``ctypes`` to be fast enough that it could be the core of a ``NumPy``
+implementation.
+
+Conclusion
+----------
+
+My goal is that a Python FFI can be fast, robust, and convenient enough to use
+that it will be *the* de facto choice of the Python community for interfacing
+with C libraries and writing code to manipulate raw memory, I want it to be
+considered as safe as writing C code with every warning flag, so safe that it
+can go in the Python standard library.
