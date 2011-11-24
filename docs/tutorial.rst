@@ -62,11 +62,10 @@ Let's try doing something slightly more complicate now, let's implement the ``as
 
     import errno
 
+    @c_math.register_error_handler("asin")
     def math_errno_handler(func, result, args):
         if yaffi.posix.get_errno() == errno.EDOM:
             raise ValueError("math domain error")
-
-    c_math.register_error_handler(math_errno_handler, "asin")
 
     def asin(value):
         return c_math.getfunc("asin")(value)

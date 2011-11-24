@@ -32,14 +32,21 @@ their behavior or stability is guaranteed.
         within the library.  Raises a :py:exc:`StructDoesNotExist` if the
         struct doesn't exist within the library.
 
-    .. py:method:: register_error_handler(self, error_handler, *funcs)
+    .. py:decorator:: register_error_handler(self, *funcs)
 
-        Registers an error handler for each named function.  ``error_handler``
-        is a callable which takes ``(function, result, args)`` as arguments.
-        It should raise an exception if one has occurred, it's return value is
-        ignored.  If any of the function already has an error handler
-        registered, an ``ErrorHandlerAlreadyRegistered`` exception is raised,
-        and none of the functions will be modified.
+        Registers the decoratored function as an error handler for each named
+        function.  The error handler is a callable which takes
+        ``(function, result, args)`` as arguments.  It should raise an
+        exception if one has occurred, it's return value is ignored.  If any of
+        the function already has an error handler registered, an
+        ``ErrorHandlerAlreadyRegistered`` exception is raised, and none of the
+        functions will be modified.  An error handler that checked that the
+        return value of a function was ``0`` would look like::
+
+            @my_library.register_error_handler("func1", "func2", "func3")
+            def my_error_handler(func, result, args):
+                if result != 0:
+                    raise SomeException
 
 
 .. py:class:: Function
