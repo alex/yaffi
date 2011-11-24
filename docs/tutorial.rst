@@ -83,7 +83,7 @@ There's a few new things here, so let's go through them:
    automatically if it occurs.
 
 Using an error handler, rather than manually doing the error checking after
-each call allows us to ensure that if we call this function anywhere else an
+each call allows us to ensure that no matter where we call this function an
 error will always be correctly propagated.
 
 .. _virtualenv: http://www.virtualenv.org/
