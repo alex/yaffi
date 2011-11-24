@@ -32,7 +32,7 @@ their behavior or stability is guaranteed.
         within the library.  Raises a :py:exc:`StructDoesNotExist` if the
         struct doesn't exist within the library.
 
-    .. py:decorator:: register_error_handler(self, *funcs)
+    .. py:decoratormethod:: register_error_handler(self, *funcs)
 
         Registers the decoratored function as an error handler for each named
         function.  The error handler is a callable which takes
