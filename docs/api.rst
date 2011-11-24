@@ -20,19 +20,19 @@ their behavior or stability is guaranteed.
     :py:exc:`LibraryDoesNotExist` is raised, if the ``path`` exists but is not
     a valid shared object a :py:exc:`InvalidLibrary` exception is raised.
 
-    .. py:method:: getfunc(self, name)
+    .. py:method:: getfunc(name)
 
         Returns the :py:class:`Function` instance corrosponding to this
         function within the library.  Raises a :py:exc:`FunctionDoesNotExist`
         if the function doesn't exist within the library.
 
-    .. py:method:: getstruct(self, name)
+    .. py:method:: getstruct(name)
 
         Returns the :py:class:`Struct` subclass corresponding to this struct
         within the library.  Raises a :py:exc:`StructDoesNotExist` if the
         struct doesn't exist within the library.
 
-    .. py:decoratormethod:: register_error_handler(self, *funcs)
+    .. py:decoratormethod:: register_error_handler(*funcs)
 
         Registers the decoratored function as an error handler for each named
         function.  The error handler is a callable which takes
@@ -53,7 +53,7 @@ their behavior or stability is guaranteed.
 
     Represents a callable function from a :py:class:`Library`.
 
-    .. py:method:: __call__(self, *args)
+    .. py:method:: __call__(*args)
 
         Calls the underlying function from the shared library, and returns the
         result from it.  All arguments are coerced to the appropriate
@@ -86,7 +86,7 @@ their behavior or stability is guaranteed.
 
 .. py:class:: PrimitiveType
 
-    .. py:function:: __init__(self [, value])
+    .. py:function:: __init__([value])
 
         Instantiates the primitive with the provided value, doing only basic
         coercion (i.e. this does not invoke :py:func:`from_param`).  If
@@ -116,7 +116,7 @@ their behavior or stability is guaranteed.
 
 This module contains helpers for working with the various POSIX functionality.
 
-    .. py:function:: get_errno
+    .. py:function:: get_errno()
 
         Returns the POSIX ``errno`` set by the last ``yaffi`` call in this
         thread.
