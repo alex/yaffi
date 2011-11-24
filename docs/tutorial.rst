@@ -74,7 +74,11 @@ Let's try doing something slightly more complicate now, let's implement the ``as
 There's a few new things here, so let's go through them:
 
 1. We define an error handler, which is a function that takes the
-   ``(func, result, args)`` as its parameters.
+   ``(func, result, args)`` as its parameters.  ``func`` is the function object
+   that was called, ``result`` is what will be returned if no error is raised,
+   and ``args`` is a tuple of the arguments that the function was called with.
+   Error handlers should raise an exception if one occured, they have no return
+   value.
 2. We register our error handler, using
    :py:meth:`Library.register_error_handler`.
 3. We use :py:func:`yaffi.posix.get_errno` to get the ``errno``, and compare it
