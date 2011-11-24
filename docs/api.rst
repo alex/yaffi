@@ -1,14 +1,24 @@
 API Reference
 =============
 
+This documents the public APIs of all these classes, exceptions, and functions.
+It may be that they have other attributes or methods, however nothing about
+their behavior or stability is guaranteed.
+
 .. py:module:: yaffi
 
-.. py:class:: Library(path)
+``yaffi``
+---------
 
-    These represent shared objects, and all the data contained within them.
-    If the ``path`` provided does not exist a :py:exc:`LibraryDoesNotExist` is
-    raised, if the ``path`` exists but is not a valid shared object a
-    :py:exc:`InvalidLibrary` exception is raised.
+.. py:class:: Library(name_or_path)
+
+    These represent shared objects, and all the data contained within them. If
+    the ``path`` provided refers to a file it will attempt to load the library
+    from that file, else it will treat it as the name of a library and attempt
+    to find a shared object with that name on the system.  If no library
+    matching the name can be found, and it is not a file on the system
+    :py:exc:`LibraryDoesNotExist` is raised, if the ``path`` exists but is not
+    a valid shared object a :py:exc:`InvalidLibrary` exception is raised.
 
     .. py:method:: getfunc(self, name)
 
@@ -64,8 +74,8 @@ API Reference
 
         Coerces the ``param`` into an instance of ``cls``.  Subclasses should
         override this to provide their own custom coercion logic.  Should raise
-        :py:exc:`CantCoerce` if the ``param`` can't be coerced into the desired
-        type.
+        :py:exc:`CoercionError` if the ``param`` can't be coerced into the
+        desired type.
 
 .. py:class:: PrimitiveType
 
@@ -89,4 +99,23 @@ API Reference
 
 .. py:exception:: StructDoesNotExist
 
-.. py:exception:: CantCoerce
+.. py:exception:: CoercionError
+
+
+.. py:module:: yaffi.posix
+
+``yaffi.posix``
+---------------
+
+This module contains helpers for working with the various POSIX functionality.
+
+    .. py:function:: get_errno
+
+        Returns the POSIX ``errno`` set by the last ``yaffi`` call in this
+        thread.
+
+        .. note::
+
+            Due to way ``errno`` works, this is not the same as
+            ``return errno`` in C, the ``errno`` value is cached after each
+            call and this the last cached value.
