@@ -39,9 +39,11 @@ their behavior or stability is guaranteed.
         ``(function, result, args)`` as arguments.  It should raise an
         exception if one has occurred, it's return value is ignored.  If any of
         the function already has an error handler registered, an
-        ``ErrorHandlerAlreadyRegistered`` exception is raised, and none of the
-        functions will be modified.  An error handler that checked that the
-        return value of a function was ``0`` would look like::
+        :py:exc:`ErrorHandlerAlreadyRegistered` exception is raised, if any of
+        the functions do not exist within the module
+        :py:exc:`FunctionDoesNotExist` exception is raised, in either case none
+        of the functions will be modified.  An error handler that checks that
+        the return value of a function is ``0`` looks like::
 
             @my_library.register_error_handler("func1", "func2", "func3")
             def my_error_handler(func, result, args):
@@ -107,6 +109,10 @@ their behavior or stability is guaranteed.
 .. py:exception:: StructDoesNotExist
 
 .. py:exception:: CoercionError
+
+    This is a subclass of :py:exc:`TypeError`.
+
+.. py:exception:: ErrorHandlerAlreadyRegistered
 
 
 .. py:module:: yaffi.posix
