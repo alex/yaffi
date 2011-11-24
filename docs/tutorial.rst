@@ -82,4 +82,8 @@ There's a few new things here, so let's go through them:
 4. Finally we define our ``asin`` function normally, the error will be raised
    automatically if it occurs.
 
+Using an error handler, rather than manually doing the error checking after
+each call allows us to ensure that if we call this function anywhere else an
+error will always be correctly propagated.
+
 .. _virtualenv: http://www.virtualenv.org/
