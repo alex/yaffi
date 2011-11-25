@@ -22,7 +22,7 @@ Unixes, the library containing mathematical functions is called ``m``::
 
 This will try to find a library on our system named ``m``.
 
-.. note
+.. note::
 
     If this gives you an exception, it's likely that you're on a weird
     platform, please file a bug.
