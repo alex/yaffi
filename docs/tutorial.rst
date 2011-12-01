@@ -79,7 +79,8 @@ There's a few new things here, so let's go through them:
    Error handlers should raise an exception if one occured, they have no return
    value.
 2. We register our error handler, using
-   :py:meth:`Library.register_error_handler`.
+   :py:meth:`Library.register_error_handler`, providing the name of the C
+   function for which we're registering the handler.
 3. We use :py:func:`yaffi.posix.get_errno` to get the ``errno``, and compare it
    with a constant from the :py:mod:`errno` module.
 4. Finally we define our ``asin`` function normally, the error will be raised
