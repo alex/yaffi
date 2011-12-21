@@ -102,4 +102,8 @@ handle it as well, we just need to add it to the registration line::
         # Same code as above.
         pass
 
+Now you know how to call basic functions and register error handlers with
+``yaffi``, :doc:`part two of the tutorial </tutorial/part2>` will introduce you
+to more advanced features like structs and pointers.
+
 .. _virtualenv: http://www.virtualenv.org/

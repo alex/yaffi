@@ -21,6 +21,6 @@ part of the Python standard library since 2.5), and expose a nicer API.
    :maxdepth: 1
 
    ctypes
-   tutorial
+   tutorial/part1
    architecture
    api
