@@ -12,7 +12,13 @@ backwards compatibility.
 Memory safety
 -------------
 
-You can crash Python with ``ctypes``.  Specifically, you can crash it in ways that aren't possible with C.  There's no question that it will be possible to crash Python by calling into some C library that crashes on a type-valid input (e.g. a function which takes an ``int`` parameter but has the semantic that it segfaults when the parameter is odd), if your C compiler wouldn't issue a warning, there's not much we can do.  On the other hand, ``ctypes`` lets you do the following, without so much as a warning::
+You can crash Python with ``ctypes``.  Specifically, you can crash it in ways
+that aren't possible with C.  There's no question that it will be possible to
+crash Python by calling into some C library that crashes on a type-valid input
+(e.g. a function which takes an ``int`` parameter but has the semantic that it
+segfaults when the parameter is odd), if your C compiler wouldn't issue a
+warning, there's not much we can do.  On the other hand, ``ctypes`` lets you do
+the following, without so much as a warning::
 
     >>> m = ctypes.CDLL(ctypes.util.find_library("m"))
     >>> m.sqrt.argtypes = [ctypes.c_long]
@@ -20,12 +26,12 @@ You can crash Python with ``ctypes``.  Specifically, you can crash it in ways th
     >>> m.sqrt(34)
 
 This is totally bogus, ``sqrt`` takes a ``double`` parameter, and your C
-compiler won't let you pass it a ``long`` with invoking automatic coercion.
+compiler won't let you pass it a ``long`` without invoking automatic coercion.
 ``ctypes`` on the other hand, happily uses the calling convention for
 ``longs``, and so calling ``m.sqrt(34)`` will either return 0 (if the floating
-point register at the argument should be passed in is empty), or some totally
-bogus value.  When we bring in pointers to this, it becomes quite easy to crash
-your programs.
+point register or stack location that the argument should be passed in is
+empty), or some totally bogus value.  When we bring pointers in to this, it
+becomes quite easy to crash your programs.
 
 Verbosity
 ---------
@@ -44,7 +50,7 @@ the fields each of your structs has.  This is a pain for a few reasons:
 3. It just sucks needing to write them out.  In C you just ``#include`` the
    header file and go from there.  This makes writing code to interface with C
    libraries more of a pain in Python, and incentivizes people to write
-   C-extensions (which are evil
+   C-extensions (which are evil).
 
 Poor APIs
 ---------
@@ -77,7 +83,10 @@ Some of the APIs in ``ctypes`` have large issues, a few examples:
 Speed
 -----
 
-This one can be overcome with some good engineering, but most of it really shouldn't be necessary.  An FFI needs to be fast, because its competitor is a C-extension, if it imposes too much overhead, no one will use it.  ``ctypes`` does the following things which lead to slowness
+This one can be overcome with some good engineering, but most of it really
+shouldn't be necessary.  An FFI needs to be fast, because its competitor is a
+C-extension, if it imposes too much overhead, no one will use it.  ``ctypes``
+does the following things which lead to slowness
 
 * It uses a different ``type`` for every length of array.  Generally, one of
   the first heuristics an optimizing compiler for Python will use is try to
@@ -89,7 +98,8 @@ This one can be overcome with some good engineering, but most of it really shoul
   immutable attributes, not things that can change.
 
 I want ``ctypes`` to be fast enough that it could be the core of a ``NumPy``
-implementation.
+implementation, both for manipulation of raw memory, and for calling out to
+libraries like BLAS.
 
 Conclusion
 ----------
@@ -97,5 +107,5 @@ Conclusion
 My goal is that a Python FFI can be fast, robust, and convenient enough to use
 that it will be *the* de facto choice of the Python community for interfacing
 with C libraries and writing code to manipulate raw memory, I want it to be
-considered as safe as writing C code with every warning flag, so safe that it
-can go in the Python standard library.
+considered as safe as writing C code with every warning flag, so safe that
+parts of the Python standard library can be written with it.

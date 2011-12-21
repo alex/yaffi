@@ -20,17 +20,13 @@ their behavior or stability is guaranteed.
     :py:exc:`LibraryDoesNotExist` is raised, if the ``path`` exists but is not
     a valid shared object a :py:exc:`InvalidLibrary` exception is raised.
 
-    .. py:method:: getfunc(name)
+    .. py:method:: __getattr__(name)
 
-        Returns the :py:class:`Function` instance corrosponding to this
-        function within the library.  Raises a :py:exc:`FunctionDoesNotExist`
-        if the function doesn't exist within the library.
-
-    .. py:method:: getstruct(name)
-
-        Returns the :py:class:`Struct` subclass corresponding to this struct
-        within the library.  Raises a :py:exc:`StructDoesNotExist` if the
-        struct doesn't exist within the library.
+        Returns the :py:class:`Function` instance or :py:class:`Struct`
+        subclass corrosponding to this name within the library.  Raises a
+        :py:exc:`AttributeError` if the name doesn't exist in the library.
+        Once a function or struct has been read from the library it becomes
+        frozen, meaning that it can't be mutated going forward.
 
     .. py:decoratormethod:: register_error_handler(*funcs)
 
@@ -49,6 +45,9 @@ their behavior or stability is guaranteed.
             def my_error_handler(func, result, args):
                 if result != 0:
                     raise SomeException
+
+        Attempting to call this with a frozen function will raise a
+        :py:exc:`AlreadyFrozen` exception.
 
 
 .. py:class:: Function
@@ -106,13 +105,13 @@ their behavior or stability is guaranteed.
 
 .. py:exception:: FunctionDoesNotExist
 
-.. py:exception:: StructDoesNotExist
-
 .. py:exception:: CoercionError
 
     This is a subclass of :py:exc:`TypeError`.
 
 .. py:exception:: ErrorHandlerAlreadyRegistered
+
+.. py:exception:: AlreadyFrozen
 
 
 .. py:module:: yaffi.posix

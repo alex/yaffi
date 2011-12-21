@@ -11,7 +11,7 @@ Before we get started using ``yaffi``, we need to install it::
 
     $ pip install yaffi
 
-It's highly reccomended to do this inside of a `virtualenv`_.
+It's highly recommended to do this inside of a `virtualenv`_.
 
 Now it's time to get coding.  We need to create a :py:class:`Library`.  On
 Unixes, the library containing mathematical functions is called ``m``::
@@ -31,7 +31,7 @@ The simplest function in the :py:mod:`math` module is probably
 :py:func:`~math.isinf`, so let's start there::
 
     def isinf(value):
-        res = c_math.getfunc("isinf")(value)
+        res = c_math.isinf(value)
         return bool(res)
 
 This is pretty simple, first we get the :c:func:`isinf` function from the
@@ -58,7 +58,11 @@ As you can see our ``isinf`` function appears to work, and it properly handles t
 
 It raised a :py:exc:`CoercionError`, a subclass of ``TypeError``.
 
-Let's try doing something slightly more complicate now, let's implement the ``asin``.  It's got an interesting catch though, as you may (or, far more likely, may not) remember from your high school trig class, the arcsin of a value is only defined on the interval ``[-1, 1]``, so we want to report an error, just like the builtin :py:func:`math.asin` implementation does::
+Let's try doing something slightly more complicate now, let's implement
+``asin``.  It's got an interesting catch though, as you may (or, far more
+likely, may not) remember from your high school trig class, the arcsin of a
+value is only defined on the interval ``[-1, 1]``, so we want to report an
+error, just like the builtin :py:func:`math.asin` implementation does::
 
     import errno
 
@@ -68,7 +72,7 @@ Let's try doing something slightly more complicate now, let's implement the ``as
             raise ValueError("math domain error")
 
     def asin(value):
-        return c_math.getfunc("asin")(value)
+        return c_math.asin(value)
 
 There's a few new things here, so let's go through them:
 
@@ -76,8 +80,8 @@ There's a few new things here, so let's go through them:
    ``(func, result, args)`` as its parameters.  ``func`` is the function object
    that was called, ``result`` is what will be returned if no error is raised,
    and ``args`` is a tuple of the arguments that the function was called with.
-   Error handlers should raise an exception if one occured, they have no return
-   value.
+   Error handlers should raise an exception if one occurred, they have no
+   return value.
 2. We register our error handler, using
    :py:meth:`Library.register_error_handler`, providing the name of the C
    function for which we're registering the handler.
@@ -87,7 +91,15 @@ There's a few new things here, so let's go through them:
    automatically if it occurs.
 
 Using an error handler, rather than manually doing the error checking after
-each call allows us to ensure that no matter where we call this function an
-error will always be correctly propagated.
+each call allows us to ensure that no matter where we call this function, an
+error will always be correctly propagated.  In addition, error handlers can
+easily work with multiple functions.  For example, ``asin`` is defined on the
+same interval, and has the same error conditions, to let the error handler
+handle it as well, we just need to add it to the registration line::
+
+    @c_math.register_error_handler("asin", "acos")
+    def math_errno_handler(func, result, args):
+        # Same code as above.
+        pass
 
 .. _virtualenv: http://www.virtualenv.org/
